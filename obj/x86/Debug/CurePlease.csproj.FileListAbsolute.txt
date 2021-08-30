@@ -239,3 +239,20 @@ C:\Users\User\Desktop\Programming\C# Programs\CurePlease_AutoFix\obj\x86\Debug\C
 C:\Users\User\Desktop\Programming\C# Programs\CurePlease_AutoFix\obj\x86\Debug\CurePlease.csproj.CopyComplete
 C:\Users\User\Desktop\Programming\C# Programs\CurePlease_AutoFix\obj\x86\Debug\Cure Please.exe
 C:\Users\User\Desktop\Programming\C# Programs\CurePlease_AutoFix\obj\x86\Debug\Cure Please.pdb
+F:\CurePlease\Master\bin\Debug\AshitaAddon\CurePlease_Addon\CurePlease_Addon.lua
+F:\CurePlease\Master\bin\Debug\Cure Please.exe
+F:\CurePlease\Master\bin\Debug\Cure Please.pdb
+F:\CurePlease\Master\bin\Debug\EliteMMO.API.dll
+F:\CurePlease\Master\bin\Debug\GlobalHotKey.dll
+F:\CurePlease\Master\obj\x86\Debug\CurePlease.csprojAssemblyReference.cache
+F:\CurePlease\Master\obj\x86\Debug\CurePlease.Form1.resources
+F:\CurePlease\Master\obj\x86\Debug\CurePlease.Form2.resources
+F:\CurePlease\Master\obj\x86\Debug\CurePlease.Form3.resources
+F:\CurePlease\Master\obj\x86\Debug\CurePlease.Form4.resources
+F:\CurePlease\Master\obj\x86\Debug\CurePlease.PartyBuffs.resources
+F:\CurePlease\Master\obj\x86\Debug\CurePlease.Properties.Resources.resources
+F:\CurePlease\Master\obj\x86\Debug\CurePlease.csproj.GenerateResource.cache
+F:\CurePlease\Master\obj\x86\Debug\CurePlease.csproj.CoreCompileInputs.cache
+F:\CurePlease\Master\obj\x86\Debug\CurePlease.csproj.CopyComplete
+F:\CurePlease\Master\obj\x86\Debug\Cure Please.exe
+F:\CurePlease\Master\obj\x86\Debug\Cure Please.pdb
