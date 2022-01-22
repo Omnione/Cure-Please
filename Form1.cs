@@ -5094,26 +5094,14 @@
             return false;
         }
 
-        /*
-         * New representation of buffs on PL
-         * As of 10 Nov 2021 update the struct changed for player data
-         * This update calls windower.ffxi.get_player(), and sends the buffs array to CurePlease
-         * via the CurePlease_Addon. 
-         * 
-         * This 'short' handles this new buff array. 
-         * 
-         * The 'short array' was used to preserve the original programming as much as possible.
-         */
         short[] windower_PL_buffs()
         {
             List<short> converted = new List<short>();
 
-            lock (ActiveBuffs)
-            {
-                List<BuffStorage> active_buff_list = ActiveBuffs.ToList();
+                //List<BuffStorage> active_buff_list = ActiveBuffs.ToList();
                 string plName = _ELITEAPIPL.Player.Name;
 
-                foreach (BuffStorage ailment in ActiveBuffs)
+                foreach (BuffStorage ailment in ActiveBuffs.ToList())
                 {
                     if (ailment.CharacterName.ToLower() == plName.ToLower())
                     {
@@ -5127,23 +5115,28 @@
                     }
                 }
 
-            }
             return converted.ToArray();
         }
 
         private bool plStatusCheck(StatusEffect requestedStatus)
         {
-            short[] temp = windower_PL_buffs();
-
+            
             bool statusFound = false;
-            /*
-             * From original
+            
             foreach (StatusEffect status in _ELITEAPIPL.Player.Buffs.Cast<StatusEffect>().Where(status => requestedStatus == status))
-            */
-            foreach (StatusEffect status in temp.Cast<StatusEffect>().Where(status => requestedStatus == status))
-             {
+            {
                 statusFound = true;
              }
+
+            if (statusFound == false)
+            {
+                short[] temp = windower_PL_buffs();
+                foreach (StatusEffect status in temp.Cast<StatusEffect>().Where(status => requestedStatus == status))
+                {
+                    statusFound = true;
+                }
+            }
+
             return statusFound;
         }
 
@@ -5172,18 +5165,17 @@
             }
             else
             {
-                /*
-                From original
                 if (_ELITEAPIPL.Player.GetPlayerInfo().Buffs.Any(b => b == buffID))
-                */
-            short[] temp = windower_PL_buffs();
-                if (temp.Any(b => b == buffID))
                 {
                     return true;
                 }
                 else
                 {
-                    return false;
+                    short[] temp = windower_PL_buffs();
+                    if (temp.Any(b => b == buffID))
+                        return true;
+                    else
+                        return false;
                 }
             }
         }
@@ -6008,6 +6000,7 @@
 
                     if (_ELITEAPIPL.Player.LoginStatus == (int)LoginStatus.LoggedIn && JobAbilityLock_Check != true && CastingBackground_Check != true)
                     {
+
                         if ((Form2.config.Composure) && (!plStatusCheck(StatusEffect.Composure)) && (GetAbilityRecast("Composure") == 0) && (HasAbility("Composure")))
                         {
 
@@ -7678,7 +7671,8 @@
               castingLockLabel.Text = "Casting is LOCKED for a JA.";
               currentAction.Text = "Using a Job Ability: " + JobabilityDATA;
               _ELITEAPIPL.ThirdParty.SendString("/ja \"" + JobAbilityName + "\" <me>");
-              await Task.Delay(TimeSpan.FromSeconds(2));
+             //Console.WriteLine("JobAbility_Wait: " + JobAbilityName);
+              await Task.Delay(TimeSpan.FromSeconds(2.3));
               castingLockLabel.Text = "Casting is UNLOCKED";
               currentAction.Text = string.Empty;
               castingSpell = string.Empty;
@@ -9566,6 +9560,10 @@
                             }   
 
                         }
+                        /*
+                         * v2.0.4.9
+                         * Added the following to recieve incoming PL buffs from Windower addon 
+                         */
                         else if (commands[1] == "PLbuffs" && commands.Count() == 4)
                         {
                             lock (ActiveBuffs)
