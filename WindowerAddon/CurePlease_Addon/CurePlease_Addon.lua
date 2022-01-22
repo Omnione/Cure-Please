@@ -1,6 +1,6 @@
 _addon.name = 'CurePlease_addon'
 _addon.author = 'Daniel_H, w/ additions from twoThree'
-_addon.version = '1.2.1 Windower'
+_addon.version = '1.2.1 Windower'  --This addon designed for CurePlease v2.0.4.9
 _addon_description = 'Allows for PARTY DEBUFF Checking and Casting Data'
 _addon.commands = {'cpaddon'}
 
@@ -66,14 +66,6 @@ function Run_Buff_Function(id, data)
   end
 end
 
-windower.register_event('incoming chunk', function (id, data)
-  if id == 0x076 then
-  Run_Buff_Function(id, data)
-end
-end)
-
-
-
 function send_player_buffs ()
 
 		Buffs = {}
@@ -94,10 +86,10 @@ function send_player_buffs ()
 			return 
 		end
 		
-		--[[
-		FOR DEBUGGING PURPOSES
-		print("Sending buffs: ", dump(Buffs))
-		]]
+		
+		--FOR DEBUGGING PURPOSES
+		--print(os.date("%H:%M:%S"), "Sending buffs: ", dump(Buffs))
+		
 		
 		  -- COUNT TOTAL NUMBER OFF BUFFS LOCATED AND BUILD THE BUFF STRING
 		  formattedString = "CUREPLEASE_PLbuffs_"..CharacterName.."_"
@@ -117,6 +109,13 @@ function send_player_buffs ()
 
  end
 
+
+windower.register_event('incoming chunk', function (id, data)
+  if id == 0x076 then
+  Run_Buff_Function(id, data)
+  --send_player_buffs ()
+end
+end)
 
 --windower.register_event('gain buff', send_buffs(31))
 windower.register_event('gain buff', function(buff_id)
@@ -156,8 +155,10 @@ end
 end)
 
 windower.register_event('action', function (data)
+
 casting = nil
 if data.actor_id == windower.ffxi.get_player().id then
+	--print(os.date("%H:%M:%S"), "windower.register_event: ", data.category)
   if data.category == 4 then
     casting = 'CUREPLEASE_casting_finished'
   elseif data.category == 8 then
