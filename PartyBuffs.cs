@@ -81,5 +81,6 @@
                 ailment_list.AppendText("\n\n");
             }
         }
+
     }
 }

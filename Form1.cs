@@ -4908,26 +4908,6 @@
                 }// Closing LOCK
             }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         }
 
         private bool DebuffContains(List<string> Debuff_list, string Checked_id)
@@ -5114,13 +5094,56 @@
             return false;
         }
 
+        /*
+         * New representation of buffs on PL
+         * As of 10 Nov 2021 update the struct changed for player data
+         * This update calls windower.ffxi.get_player(), and sends the buffs array to CurePlease
+         * via the CurePlease_Addon. 
+         * 
+         * This 'short' handles this new buff array. 
+         * 
+         * The 'short array' was used to preserve the original programming as much as possible.
+         */
+        short[] windower_PL_buffs()
+        {
+            List<short> converted = new List<short>();
+
+            lock (ActiveBuffs)
+            {
+                List<BuffStorage> active_buff_list = ActiveBuffs.ToList();
+                string plName = _ELITEAPIPL.Player.Name;
+
+                foreach (BuffStorage ailment in ActiveBuffs)
+                {
+                    if (ailment.CharacterName.ToLower() == plName.ToLower())
+                    {
+                        // new list from buff array
+                        List<string> plbuff_list = ailment.CharacterBuffs.Split(',').ToList();
+
+                        foreach (String str in plbuff_list)
+                        {
+                            converted.Add(Convert.ToInt16(str));
+                        }
+                    }
+                }
+
+            }
+            return converted.ToArray();
+        }
+
         private bool plStatusCheck(StatusEffect requestedStatus)
         {
+            short[] temp = windower_PL_buffs();
+
             bool statusFound = false;
+            /*
+             * From original
             foreach (StatusEffect status in _ELITEAPIPL.Player.Buffs.Cast<StatusEffect>().Where(status => requestedStatus == status))
-            {
+            */
+            foreach (StatusEffect status in temp.Cast<StatusEffect>().Where(status => requestedStatus == status))
+             {
                 statusFound = true;
-            }
+             }
             return statusFound;
         }
 
@@ -5149,7 +5172,12 @@
             }
             else
             {
+                /*
+                From original
                 if (_ELITEAPIPL.Player.GetPlayerInfo().Buffs.Any(b => b == buffID))
+                */
+            short[] temp = windower_PL_buffs();
+                if (temp.Any(b => b == buffID))
                 {
                     return true;
                 }
@@ -9532,7 +9560,26 @@
                                 {
                                     CharacterName = commands[2],
                                     CharacterBuffs = commands[3]
+
                                 });
+                                
+                            }   
+
+                        }
+                        else if (commands[1] == "PLbuffs" && commands.Count() == 4)
+                        {
+                            lock (ActiveBuffs)
+                            {
+
+                                ActiveBuffs.RemoveAll(buf => buf.CharacterName == commands[2]);
+
+                                ActiveBuffs.Add(new BuffStorage
+                                {
+                                    CharacterName = commands[2],
+                                    CharacterBuffs = commands[3]
+
+                                });
+
                             }
 
                         }
@@ -9782,6 +9829,11 @@
         private void CustomCommand_Tracker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
             CustomCommand_Tracker.RunWorkerAsync();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 

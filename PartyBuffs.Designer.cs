@@ -1,4 +1,6 @@
-﻿namespace CurePlease
+﻿using System;
+
+namespace CurePlease
 {
     partial class PartyBuffs
     {
@@ -41,6 +43,7 @@
             this.ailment_list.Size = new System.Drawing.Size(454, 239);
             this.ailment_list.TabIndex = 1;
             this.ailment_list.Text = "";
+            //this.ailment_list.TextChanged += new System.EventHandler(this.ailment_list_TextChanged);
             // 
             // label_p1
             // 
@@ -70,6 +73,7 @@
             this.PerformLayout();
 
         }
+
 
         #endregion
         private System.Windows.Forms.RichTextBox ailment_list;

@@ -2420,6 +2420,7 @@ namespace CurePlease
             this.Text = "Cure Please v. 2.0.0.5";
             this.TransparencyKey = System.Drawing.Color.Silver;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.Resize += new System.EventHandler(this.Form1_Resize);
             this.party0.ResumeLayout(false);
             this.party0.PerformLayout();
