@@ -1,6 +1,6 @@
 _addon.name = 'CurePlease_addon'
-_addon.author = 'Daniel_H'
-_addon.version = '1.2 Windower'
+_addon.author = 'Daniel_H, w/ additions from twoThree'
+_addon.version = '1.2.1 Windower'
 _addon_description = 'Allows for PARTY DEBUFF Checking and Casting Data'
 _addon.commands = {'cpaddon'}
 
@@ -17,6 +17,7 @@ function tablelength(T)
 end
 
 function Run_Buff_Function(id, data)
+  
   for k = 0, 4 do
     local Uid = data:unpack('I', k * 48 + 5)
     if Uid ~= 0 and Uid ~= nil then
@@ -51,6 +52,9 @@ function Run_Buff_Function(id, data)
         end
         intIndex = intIndex + 1
       end
+	  
+	  --print("CP..Sending: ", formattedString )
+
       -- COMPLETED BUILDING THE BUFFS TABLE AND GRABBING THE CHARACTER NAME, SEND THE DATA VIA THE LOCAL NETWORK USING SOCKETS
       local CP_connect = assert(socket.udp())
       CP_connect:settimeout(1)
@@ -66,6 +70,61 @@ windower.register_event('incoming chunk', function (id, data)
   if id == 0x076 then
   Run_Buff_Function(id, data)
 end
+end)
+
+
+
+function send_player_buffs ()
+
+		Buffs = {}
+		CharacterName = nil
+		formattedString = nil
+		intIndex = 1
+
+		-- GRAB THE MEMBERS NAME
+		if windower.ffxi.get_player() ~= nil then
+			CharacterName = windower.ffxi.get_player().name;
+		else 
+			return 
+		end 
+		 
+		if CharacterName ~= nil then
+			  Buffs = windower.ffxi.get_player()["buffs"]
+		else 
+			return 
+		end
+		
+		--[[
+		FOR DEBUGGING PURPOSES
+		print("Sending buffs: ", dump(Buffs))
+		]]
+		
+		  -- COUNT TOTAL NUMBER OFF BUFFS LOCATED AND BUILD THE BUFF STRING
+		  formattedString = "CUREPLEASE_PLbuffs_"..CharacterName.."_"
+		  for index, value in pairs(Buffs) do
+			formattedString = formattedString .. value
+			if intIndex ~= tablelength(Buffs) then
+			  formattedString = formattedString ..","
+			end
+			intIndex = intIndex + 1
+		  end
+
+		  -- COMPLETED BUILDING THE BUFFS TABLE AND GRABBING THE CHARACTER NAME, SEND THE DATA VIA THE LOCAL NETWORK USING SOCKETS
+		  local CP_connect = assert(socket.udp())
+		  CP_connect:settimeout(1)
+		  assert(CP_connect:sendto(formattedString, ip, port))
+		  CP_connect:close()
+
+ end
+
+
+--windower.register_event('gain buff', send_buffs(31))
+windower.register_event('gain buff', function(buff_id)
+	send_player_buffs()
+end)
+
+windower.register_event('lose buff', function(buff_id)
+	send_player_buffs()
 end)
 
 windower.register_event('addon command', function(input, ...)
@@ -85,6 +144,7 @@ if args ~= nil then
     CP_connect:settimeout(1)
     assert(CP_connect:sendto("CUREPLEASE_confirmed", ip, port))
     CP_connect:close()
+	send_player_buffs()
   elseif cmd == "cmd" then
     local CP_connect = assert(socket.udp())
     CP_connect:settimeout(1)
@@ -115,3 +175,22 @@ if data.actor_id == windower.ffxi.get_player().id then
   end
 end
 end)
+
+
+--[[
+DEBUGGING PURPOSES ONLY 
+NOT INTENDED FOR GENERAL USE
+
+function dump(temp)
+   if type(temp) == 'table' then
+      local s = '{ '
+      for k,v in pairs(temp) do
+         if type(k) ~= 'number' then k = '"'..k..'"' end
+         s = s .. '['..k..'] = ' .. dump(v) .. ','
+      end
+      return s .. '} '
+   else
+      return tostring(temp)
+   end
+end
+]]
