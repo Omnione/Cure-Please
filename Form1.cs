@@ -5098,9 +5098,11 @@
         {
             List<short> converted = new List<short>();
 
-                //List<BuffStorage> active_buff_list = ActiveBuffs.ToList();
-                string plName = _ELITEAPIPL.Player.Name;
+            //List<BuffStorage> active_buff_list = ActiveBuffs.ToList();
 
+            string plName = _ELITEAPIPL.Player.Name;
+            if (!string.IsNullOrEmpty(plName))
+            { 
                 foreach (BuffStorage ailment in ActiveBuffs.ToList())
                 {
                     if (ailment.CharacterName.ToLower() == plName.ToLower())
@@ -5114,7 +5116,7 @@
                         }
                     }
                 }
-
+            }
             return converted.ToArray();
         }
 
