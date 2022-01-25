@@ -5098,8 +5098,6 @@
         {
             List<short> converted = new List<short>();
 
-            //List<BuffStorage> active_buff_list = ActiveBuffs.ToList();
-
             string plName = _ELITEAPIPL.Player.Name;
             if (!string.IsNullOrEmpty(plName))
             { 
@@ -5110,9 +5108,11 @@
                         // new list from buff array
                         List<string> plbuff_list = ailment.CharacterBuffs.Split(',').ToList();
 
+                        //Console.WriteLine("windower_PL_buffs() - str:  " + plbuff_list);
+
                         foreach (String str in plbuff_list)
                         {
-                            converted.Add(Convert.ToInt16(str));
+                            if (str != "" && str != null) converted.Add(Convert.ToInt16(str));
                         }
                     }
                 }
